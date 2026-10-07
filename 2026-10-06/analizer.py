@@ -66,18 +66,18 @@ f_offset['ext_clk'], p_noise['ext_clk'] = np.loadtxt(r'2026-10-06\tr_dat0012.csv
 # plot
 fig, ax = plt.subplots(figsize=(8, 5))
 
-ax.plot(f_offset['int_clk'], p_noise['int_clk'], '-', lw=1, c='tab:blue', label='Internal Clock')
-ax.plot(f_offset['ext_clk'], p_noise['ext_clk'], '-', lw=1, c='tab:red', label='External Clock (SRS+Rb Clock)')
+ax.plot(f_offset['int_clk'], p_noise['int_clk'], '-', lw=1, c='tab:blue', label='Внутренний часы advantex')
+ax.plot(f_offset['ext_clk'], p_noise['ext_clk'], '-', lw=1, c='tab:red', label='Внешние Rb часы (SRS)')
 
 ax.grid(True)
 ax.legend(loc='upper right')
 ax.set_xscale('log')
 ax.set_xlim([f_offset['int_clk'][0], f_offset['int_clk'][-1]])
-ax.set_xlabel(r'Frequency Offset, [Hz]')
-ax.set_ylabel(r'Phase Noise, [dBc/Hz]')
+ax.set_xlabel(r'f, [Гц]')
+ax.set_ylabel(r'L(f), [дБн/Гц]')
 
 
-ax.set_title(r'Advantex Phase Noise (6.834 GHz)')
+#ax.set_title(r'Advantex Phase Noise (6.834 GHz)')
 plt.tight_layout()
 # plt.savefig(f'fig_vibrational_noise_{delay}.png')
 
