@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 import allantools
 from matplotlib import rcParams
 from scipy.integrate import trapezoid
-
+from matplotlib.ticker import AutoMinorLocator
 
 # plot settings
 rcParams['font.size'] = 14
@@ -66,19 +66,51 @@ f_offset['ext_clk'], p_noise['ext_clk'] = np.loadtxt(r'2026-10-06\tr_dat0012.csv
 # plot
 fig, ax = plt.subplots(figsize=(8, 5))
 
-ax.plot(f_offset['int_clk'], p_noise['int_clk'], '-', lw=1, c='tab:blue', label='Внутренний часы advantex')
-ax.plot(f_offset['ext_clk'], p_noise['ext_clk'], '-', lw=1, c='tab:red', label='Внешние Rb часы (SRS)')
 
-ax.grid(True)
-ax.legend(loc='upper right')
+# внешний эталон рисуем первым, внутренний поверх него (zorder)
+ax.plot(f_offset['ext_clk'], p_noise['ext_clk'], '--', marker='s', ms=2.5, lw=1,
+        c='tab:red', label='Рубидиевый эталон (SRS)', zorder=2)
+ax.plot(f_offset['int_clk'], p_noise['int_clk'], '-', marker='o', ms=2.5, lw=1,
+        c='tab:blue', label='Собственный эталон Advantex', zorder=3)
+
+T = 10e-3      # с, время свободной эволюции (из текста отчёта)
+tau = 5e-6    # с, длительность π/2-импульса: ПОДСТАВЬТЕ СВОЁ ЗНАЧЕНИЕ
+
+f_lo, f_hi = 1/T, 1/tau   # границы рабочего диапазона, Гц
+
+# заливка рабочего диапазона и граничные линии
+ax.axvspan(f_lo, f_hi, color='tab:gray', alpha=0.15, zorder=0)
+ax.axvline(f_lo, color='k', ls='--', lw=1, zorder=1)
+ax.axvline(f_hi, color='k', ls='--', lw=1, zorder=1)
+
+# подписи у верхнего края (x в данных, y в долях высоты осей)
+trans = ax.get_xaxis_transform()
+ax.text(f_lo, 0.04, r' $1/T$', transform=trans, ha='left', va='bottom')
+ax.text(f_hi, 0.04, r'$1/\tau$ ', transform=trans, ha='right', va='bottom')
+
+
 ax.set_xscale('log')
 ax.set_xlim([f_offset['int_clk'][0], f_offset['int_clk'][-1]])
-ax.set_xlabel(r'f, [Гц]')
-ax.set_ylabel(r'L(f), [дБн/Гц]')
+
+ax.minorticks_on()  # на всякий случай включаем минорные деления на обеих осях
+ax.yaxis.set_minor_locator(AutoMinorLocator(2))  # шаг 10 дБ; для 5 дБ поставьте 4
+
+ax.set_axisbelow(True)  # сетка под кривыми, а не поверх них
+
+ax.grid(True, which='major', color='0.55', lw=0.9, ls='-')
+ax.grid(True, which='minor', color='0.75', lw=0.7, ls='-')
+
+ax.set_xlabel(r'$f$, Гц')
+ax.set_ylabel(r'$L(f)$, дБн/Гц')
+
+# порядок в легенде: сначала внутренний эталон
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles[::-1], labels[::-1], loc='upper right')
+
+fig.tight_layout()
 
 
 #ax.set_title(r'Advantex Phase Noise (6.834 GHz)')
-plt.tight_layout()
 # plt.savefig(f'fig_vibrational_noise_{delay}.png')
 
 phase_int_clk = count_phase(f_offset['int_clk'], p_noise['int_clk'])
