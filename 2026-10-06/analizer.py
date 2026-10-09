@@ -69,9 +69,9 @@ fig, ax = plt.subplots(figsize=(8, 5))
 
 # внешний эталон рисуем первым, внутренний поверх него (zorder)
 ax.plot(f_offset['ext_clk'], p_noise['ext_clk'], '--', marker='s', ms=2.5, lw=1,
-        c='tab:red', label='Рубидиевый эталон (SRS)', zorder=2)
+        c='tab:red', label='Внешний источник опорного сигнала', zorder=2)
 ax.plot(f_offset['int_clk'], p_noise['int_clk'], '-', marker='o', ms=2.5, lw=1,
-        c='tab:blue', label='Собственный эталон Advantex', zorder=3)
+        c='tab:blue', label='Внутренний источник опорного сигнала', zorder=3)
 
 T = 10e-3      # с, время свободной эволюции (из текста отчёта)
 tau = 5e-6    # с, длительность π/2-импульса: ПОДСТАВЬТЕ СВОЁ ЗНАЧЕНИЕ
