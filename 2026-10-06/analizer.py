@@ -45,10 +45,10 @@ def count_phase(f_offset, L_dBc):
 
 T_cycle = 0.120 + 0.045
 tau = 5e-6
-f_max = 1/tau
+f_max = np.inf
 W = np.pi/2/tau
 T = 0.010
-f_min = 1/T
+f_min = 0
 k_eff = 4*np.pi/780.24e-9
 g_span = 2*np.pi/(k_eff*T**2)*1e5
 print(f"g span = {round(g_span)} mGal")
@@ -60,8 +60,8 @@ p_noise = {'int_clk': None,
            'ext_clk': None}
 f_offset = {'int_clk': None,
             'ext_clk': None}
-f_offset['int_clk'], p_noise['int_clk'] = np.loadtxt(r'2026-10-06\tr_dat0022.csv', delimiter=',', unpack=True, skiprows=1)
-f_offset['ext_clk'], p_noise['ext_clk'] = np.loadtxt(r'2026-10-06\tr_dat0012.csv', delimiter=',', unpack=True, skiprows=1)
+f_offset['int_clk'], p_noise['int_clk'] = np.loadtxt(r'2026-10-06\tr_dat0015.csv', delimiter=',', unpack=True, skiprows=1)
+f_offset['ext_clk'], p_noise['ext_clk'] = np.loadtxt(r'2026-10-06\tr_dat0017.csv', delimiter=',', unpack=True, skiprows=1)
 
 # plot
 fig, ax = plt.subplots(figsize=(8, 5))
