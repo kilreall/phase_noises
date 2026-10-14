@@ -62,16 +62,18 @@ f_offset = {'int_clk': None,
             'ext_clk': None}
 f_offset['int_clk'], p_noise['int_clk'] = np.loadtxt(r'2026-10-06\tr_dat0015.csv', delimiter=',', unpack=True, skiprows=1)
 f_offset['ext_clk'], p_noise['ext_clk'] = np.loadtxt(r'2026-10-06\tr_dat0017.csv', delimiter=',', unpack=True, skiprows=1)
-
+f_offset['ext_clk1'], p_noise['ext_clk1'] = np.loadtxt(r'2026-10-06\tr_dat0023.csv', delimiter=',', unpack=True, skiprows=1)
 # plot
 fig, ax = plt.subplots(figsize=(8, 5))
 
 
 # внешний эталон рисуем первым, внутренний поверх него (zorder)
 ax.plot(f_offset['ext_clk'], p_noise['ext_clk'], '--', marker='s', ms=2.5, lw=1,
-        c='tab:red', label='Внешний источник опорного сигнала', zorder=2)
+        c='tab:red', label='Внешний стандарт', zorder=2)
 ax.plot(f_offset['int_clk'], p_noise['int_clk'], '-', marker='o', ms=2.5, lw=1,
-        c='tab:blue', label='Внутренний источник опорного сигнала', zorder=3)
+        c='tab:blue', label='Внутренний стандарт', zorder=3)
+ax.plot(f_offset['ext_clk1'], p_noise['ext_clk1'], '-', marker='o', ms=2.5, lw=1,
+        c='tab:green', label='Внешний дублирующий генератор', zorder=3)
 
 T = 10e-3      # с, время свободной эволюции (из текста отчёта)
 tau = 5e-6    # с, длительность π/2-импульса: ПОДСТАВЬТЕ СВОЁ ЗНАЧЕНИЕ
@@ -115,10 +117,13 @@ fig.tight_layout()
 
 phase_int_clk = count_phase(f_offset['int_clk'], p_noise['int_clk'])
 phase_ext_clk = count_phase(f_offset['ext_clk'], p_noise['ext_clk'])
+phase_ext_clk1 = count_phase(f_offset['ext_clk1'], p_noise['ext_clk1'])
 
 print(f"Internal clock phase noise = {phase_int_clk*1e3} mrad")
 print(f"Internal clock gravity noise = {phase_int_clk/k_eff/T/T*1e5} mGal")
 print(f"Enternal clock phase noise = {phase_ext_clk*1e3} mrad")
 print(f"Enternal clock gravity noise = {phase_ext_clk/k_eff/T/T*1e5} mGal")
+print(f"Enternal clon generator phase noise = {phase_ext_clk1*1e3} mrad")
+print(f"Enternal clon generator noise = {phase_ext_clk1/k_eff/T/T*1e5} mGal")
 
 plt.show()
